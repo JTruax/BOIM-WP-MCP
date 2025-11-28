@@ -59,12 +59,18 @@ Follow these simple steps to connect this MCP server to Claude Desktop or Cursor
    ```bash
    npm run build
    ```
+   
+   **Verify the build succeeded:** You should see a `dist/` directory created with `index.js` inside it. If the build fails, check that all dependencies installed correctly.
 
 4. **Note the full path** to the `dist/index.js` file. You'll need this in the next step.
    
+   **To get the full path:**
+   - **macOS/Linux**: Run `pwd` in the terminal after `cd BOIM-WP-MCP`, then append `/dist/index.js`
+   - **Windows**: Run `cd` in Command Prompt after `cd BOIM-WP-MCP`, then append `\dist\index.js`
+   
    Example paths:
    - macOS/Linux: `/Users/yourname/BOIM-WP-MCP/dist/index.js`
-   - Windows: `C:\Users\yourname\BOIM-WP-MCP\dist\index.js`
+   - Windows: `C:\\Users\\yourname\\BOIM-WP-MCP\\dist\\index.js` (use double backslashes `\\` in JSON, or forward slashes `/`)
 
 ### Step 2: Configure Claude Desktop
 
@@ -110,8 +116,8 @@ Follow these simple steps to connect this MCP server to Claude Desktop or Cursor
 
 1. **Open Cursor Settings:**
    - Press `Cmd/Ctrl + Shift + P` to open the command palette
-   - Type "Preferences: Open User Settings (JSON)"
-   - Or go to Settings → Extensions → MCP
+   - Type "Preferences: Open User Settings (JSON)" and select it
+   - Or go to Settings → Extensions → MCP (if available)
 
 2. **Add the MCP server configuration:**
    
@@ -127,7 +133,7 @@ Follow these simple steps to connect this MCP server to Claude Desktop or Cursor
    }
    ```
 
-3. **Replace `/full/path/to/wordpress-gutenberg-mcp-server/dist/index.js`** with your actual path from Step 1.
+3. **Replace `/full/path/to/BOIM-WP-MCP/dist/index.js`** with your actual path from Step 1.
 
 4. **Save the settings** and restart Cursor.
 
