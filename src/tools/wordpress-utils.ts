@@ -1,4 +1,5 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import type { MCPServer } from '../index.js';
 import { WordPressStandards } from '../standards.js';
 
 /**
@@ -361,9 +362,9 @@ ${code}`;
 /**
  * Register WordPress utility tools
  */
-export function registerWordPressUtils(server: Server): void {
+export function registerWordPressUtils(server: MCPServer): void {
   // Generate PHP function tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_php_function',
     description: 'Generate WordPress PHP function following coding standards',
     inputSchema: {
@@ -419,7 +420,7 @@ export function registerWordPressUtils(server: Server): void {
   });
 
   // Generate hook tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_hook',
     description: 'Generate WordPress action or filter hook code',
     inputSchema: {
@@ -459,7 +460,7 @@ export function registerWordPressUtils(server: Server): void {
   });
 
   // Generate shortcode tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_shortcode',
     description: 'Generate WordPress shortcode implementation',
     inputSchema: {
@@ -498,7 +499,7 @@ export function registerWordPressUtils(server: Server): void {
   });
 
   // Generate REST endpoint tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_rest_endpoint',
     description: 'Generate WordPress REST API endpoint',
     inputSchema: {
@@ -547,7 +548,7 @@ export function registerWordPressUtils(server: Server): void {
   });
 
   // Format for WPCodebox tool
-  server.setTool({
+  server.registerTool({
     name: 'format_for_wpcodebox',
     description: 'Format any generated code for WPCodebox snippet structure',
     inputSchema: {

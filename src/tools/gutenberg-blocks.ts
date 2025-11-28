@@ -1,4 +1,5 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import type { MCPServer } from '../index.js';
 
 /**
  * Gutenberg Block Generation Tools
@@ -436,9 +437,9 @@ This guide covers WordPress Gutenberg block development standards and best pract
 /**
  * Register Gutenberg tools
  */
-export function registerGutenbergTools(server: Server): void {
+export function registerGutenbergTools(server: MCPServer): void {
   // Generate block tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_gutenberg_block',
     description: 'Generate complete Gutenberg block code including block.json, PHP registration, and React components',
     inputSchema: {
@@ -478,7 +479,7 @@ export function registerGutenbergTools(server: Server): void {
   });
 
   // Generate block variation tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_block_variation',
     description: 'Generate a Gutenberg block variation',
     inputSchema: {
@@ -509,7 +510,7 @@ export function registerGutenbergTools(server: Server): void {
   });
 
   // Generate block pattern tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_block_pattern',
     description: 'Generate a Gutenberg block pattern',
     inputSchema: {
@@ -546,7 +547,7 @@ export function registerGutenbergTools(server: Server): void {
   });
 
   // Get Gutenberg standards tool
-  server.setTool({
+  server.registerTool({
     name: 'get_gutenberg_standards',
     description: 'Get Gutenberg block development standards and best practices',
     inputSchema: {

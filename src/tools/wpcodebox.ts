@@ -1,4 +1,5 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import type { MCPServer } from '../index.js';
 
 /**
  * WPCodebox Tool Registration
@@ -208,9 +209,9 @@ function validateSnippetFormat(snippet: WpCodeboxSnippet): {
 /**
  * Register WPCodebox tools
  */
-export function registerWpCodeboxTools(server: Server): void {
+export function registerWpCodeboxTools(server: MCPServer): void {
   // Format snippet tool
-  server.setTool({
+  server.registerTool({
     name: 'format_wpcodebox_snippet',
     description: 'Format a code snippet for WPCodebox plugin with proper structure and metadata',
     inputSchema: {
@@ -271,7 +272,7 @@ export function registerWpCodeboxTools(server: Server): void {
   });
 
   // Get guidelines tool
-  server.setTool({
+  server.registerTool({
     name: 'get_wpcodebox_guidelines',
     description: 'Get WPCodebox usage guidelines and best practices',
     inputSchema: {
@@ -284,7 +285,7 @@ export function registerWpCodeboxTools(server: Server): void {
   });
 
   // Validate snippet format tool
-  server.setTool({
+  server.registerTool({
     name: 'validate_wpcodebox_snippet',
     description: 'Validate a snippet structure against WPCodebox requirements',
     inputSchema: {

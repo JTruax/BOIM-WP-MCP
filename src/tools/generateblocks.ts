@@ -1,4 +1,5 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import type { MCPServer } from '../index.js';
 
 /**
  * GenerateBlocks Integration Tools
@@ -380,9 +381,9 @@ GenerateBlocks is a lightweight, versatile block collection for WordPress Gutenb
 /**
  * Register GenerateBlocks tools
  */
-export function registerGenerateBlocksTools(server: Server): void {
+export function registerGenerateBlocksTools(server: MCPServer): void {
   // Generate GB block tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_gb_block',
     description: 'Generate GenerateBlocks-compatible block code',
     inputSchema: {
@@ -411,7 +412,7 @@ export function registerGenerateBlocksTools(server: Server): void {
   });
 
   // Generate GB styles tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_gb_styles',
     description: 'Generate GenerateBlocks-specific CSS',
     inputSchema: {
@@ -438,7 +439,7 @@ export function registerGenerateBlocksTools(server: Server): void {
   });
 
   // Generate GB template tool
-  server.setTool({
+  server.registerTool({
     name: 'generate_gb_template',
     description: 'Generate GenerateBlocks template code',
     inputSchema: {
@@ -478,7 +479,7 @@ export function registerGenerateBlocksTools(server: Server): void {
   });
 
   // Get GenerateBlocks guide tool
-  server.setTool({
+  server.registerTool({
     name: 'get_generateblocks_guide',
     description: 'Get GenerateBlocks development guide and best practices',
     inputSchema: {

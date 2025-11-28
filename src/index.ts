@@ -15,6 +15,14 @@ import { registerGenerateBlocksTools } from './tools/generateblocks.js';
 import { registerWordPressUtils } from './tools/wordpress-utils.js';
 
 /**
+ * Interface for MCP server tool and resource registration
+ */
+export interface MCPServer {
+  registerTool(tool: { name: string; description: string; inputSchema: any; handler: (args: any) => Promise<any> }): void;
+  registerResource(resource: { uri: string; name: string; description?: string; mimeType?: string; handler: () => Promise<string> }): void;
+}
+
+/**
  * WordPress Gutenberg MCP Server
  * 
  * A Model Context Protocol server that provides WordPress development
@@ -24,8 +32,10 @@ import { registerWordPressUtils } from './tools/wordpress-utils.js';
  * - GenerateBlocks plugin
  * - WPCodebox code snippet formatting
  */
-class WordPressGutenbergMCPServer {
+class WordPressGutenbergMCPServer implements MCPServer {
   private server: Server;
+  private tools: Map<string, { name: string; description: string; inputSchema: any; handler: (args: any) => Promise<any> }> = new Map();
+  private resources: Map<string, { uri: string; name: string; description?: string; mimeType?: string; handler: () => Promise<string> }> = new Map();
 
   constructor() {
     this.server = new Server(
@@ -41,16 +51,20 @@ class WordPressGutenbergMCPServer {
       }
     );
 
-    this.setupHandlers();
     this.registerTools();
     this.registerResources();
+    this.setupHandlers();
   }
 
   private setupHandlers(): void {
     // List available tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
       return {
-        tools: this.server.listTools(),
+        tools: Array.from(this.tools.values()).map(tool => ({
+          name: tool.name,
+          description: tool.description,
+          inputSchema: tool.inputSchema,
+        })),
       };
     });
 
@@ -58,25 +72,29 @@ class WordPressGutenbergMCPServer {
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { name, arguments: args } = request.params;
 
+      const tool = this.tools.get(name);
+      if (!tool) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Tool not found: ${name}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
       try {
-        const tool = this.server.getTool(name);
-        if (!tool) {
-          throw new Error(`Tool not found: ${name}`);
-        }
-
-        if (tool.handler) {
-          const result = await tool.handler(args || {});
-          return {
-            content: [
-              {
-                type: 'text',
-                text: typeof result === 'string' ? result : JSON.stringify(result, null, 2),
-              },
-            ],
-          };
-        }
-
-        throw new Error(`Tool ${name} has no handler`);
+        const result = await tool.handler(args || {});
+        return {
+          content: [
+            {
+              type: 'text',
+              text: typeof result === 'string' ? result : JSON.stringify(result, null, 2),
+            },
+          ],
+        };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         return {
@@ -94,7 +112,12 @@ class WordPressGutenbergMCPServer {
     // List available resources
     this.server.setRequestHandler(ListResourcesRequestSchema, async () => {
       return {
-        resources: this.server.listResources(),
+        resources: Array.from(this.resources.values()).map(resource => ({
+          uri: resource.uri,
+          name: resource.name,
+          description: resource.description,
+          mimeType: resource.mimeType,
+        })),
       };
     });
 
@@ -102,26 +125,31 @@ class WordPressGutenbergMCPServer {
     this.server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
       const { uri } = request.params;
 
+      const resource = this.resources.get(uri);
+      if (!resource) {
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: 'text/plain',
+              text: `Resource not found: ${uri}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
       try {
-        const resource = this.server.getResource(uri);
-        if (!resource) {
-          throw new Error(`Resource not found: ${uri}`);
-        }
-
-        if (resource.handler) {
-          const content = await resource.handler();
-          return {
-            contents: [
-              {
-                uri,
-                mimeType: resource.mimeType || 'text/markdown',
-                text: typeof content === 'string' ? content : JSON.stringify(content, null, 2),
-              },
-            ],
-          };
-        }
-
-        throw new Error(`Resource ${uri} has no handler`);
+        const content = await resource.handler();
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: resource.mimeType || 'text/markdown',
+              text: typeof content === 'string' ? content : JSON.stringify(content, null, 2),
+            },
+          ],
+        };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         return {
@@ -140,15 +168,24 @@ class WordPressGutenbergMCPServer {
 
   private registerTools(): void {
     // Register all tool modules
-    registerWpCodeboxTools(this.server);
-    registerGutenbergTools(this.server);
-    registerGenerateBlocksTools(this.server);
-    registerWordPressUtils(this.server);
+    registerWpCodeboxTools(this);
+    registerGutenbergTools(this);
+    registerGenerateBlocksTools(this);
+    registerWordPressUtils(this);
+  }
+
+  // Helper methods for tool and resource registration
+  registerTool(tool: { name: string; description: string; inputSchema: any; handler: (args: any) => Promise<any> }): void {
+    this.tools.set(tool.name, tool);
+  }
+
+  registerResource(resource: { uri: string; name: string; description?: string; mimeType?: string; handler: () => Promise<string> }): void {
+    this.resources.set(resource.uri, resource);
   }
 
   private registerResources(): void {
     // Register knowledge base resources
-    this.server.setResource({
+    this.registerResource({
       uri: 'resource://wordpress-gutenberg-mcp/coding-standards',
       name: 'WordPress Coding Standards',
       description: 'WordPress coding standards reference for PHP, JavaScript, and CSS',
@@ -163,7 +200,7 @@ class WordPressGutenbergMCPServer {
       },
     });
 
-    this.server.setResource({
+    this.registerResource({
       uri: 'resource://wordpress-gutenberg-mcp/gutenberg-patterns',
       name: 'Gutenberg Block Development Patterns',
       description: 'Common Gutenberg block development patterns and examples',
@@ -178,7 +215,7 @@ class WordPressGutenbergMCPServer {
       },
     });
 
-    this.server.setResource({
+    this.registerResource({
       uri: 'resource://wordpress-gutenberg-mcp/generateblocks-guide',
       name: 'GenerateBlocks Development Guide',
       description: 'Best practices for GenerateBlocks plugin development',
@@ -193,7 +230,7 @@ class WordPressGutenbergMCPServer {
       },
     });
 
-    this.server.setResource({
+    this.registerResource({
       uri: 'resource://wordpress-gutenberg-mcp/wpcodebox-format',
       name: 'WPCodebox Snippet Format',
       description: 'WPCodebox snippet format specifications and structure',
@@ -208,7 +245,7 @@ class WordPressGutenbergMCPServer {
       },
     });
 
-    this.server.setResource({
+    this.registerResource({
       uri: 'resource://wordpress-gutenberg-mcp/generatepress-guide',
       name: 'GeneratePress Theme Guide',
       description: 'GeneratePress theme-specific development guidelines',
