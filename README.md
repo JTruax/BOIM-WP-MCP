@@ -46,8 +46,8 @@ Follow these simple steps to connect this MCP server to Claude Desktop or Cursor
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/wordpress-gutenberg-mcp-server.git
-   cd wordpress-gutenberg-mcp-server
+   git clone https://github.com/JTruax/BOIM-WP-MCP.git
+   cd BOIM-WP-MCP
    ```
 
 2. **Install dependencies:**
@@ -63,8 +63,8 @@ Follow these simple steps to connect this MCP server to Claude Desktop or Cursor
 4. **Note the full path** to the `dist/index.js` file. You'll need this in the next step.
    
    Example paths:
-   - macOS/Linux: `/Users/yourname/wordpress-gutenberg-mcp-server/dist/index.js`
-   - Windows: `C:\Users\yourname\wordpress-gutenberg-mcp-server\dist\index.js`
+   - macOS/Linux: `/Users/yourname/BOIM-WP-MCP/dist/index.js`
+   - Windows: `C:\Users\yourname\BOIM-WP-MCP\dist\index.js`
 
 ### Step 2: Configure Claude Desktop
 
@@ -83,7 +83,7 @@ Follow these simple steps to connect this MCP server to Claude Desktop or Cursor
      "mcpServers": {
        "wordpress-gutenberg": {
          "command": "node",
-         "args": ["/full/path/to/wordpress-gutenberg-mcp-server/dist/index.js"]
+         "args": ["/full/path/to/BOIM-WP-MCP/dist/index.js"]
        }
      }
    }
@@ -96,13 +96,13 @@ Follow these simple steps to connect this MCP server to Claude Desktop or Cursor
        "existing-server": { ... },
        "wordpress-gutenberg": {
          "command": "node",
-         "args": ["/full/path/to/wordpress-gutenberg-mcp-server/dist/index.js"]
+         "args": ["/full/path/to/BOIM-WP-MCP/dist/index.js"]
        }
      }
    }
    ```
 
-4. **Replace `/full/path/to/wordpress-gutenberg-mcp-server/dist/index.js`** with your actual path from Step 1.
+4. **Replace `/full/path/to/BOIM-WP-MCP/dist/index.js`** with your actual path from Step 1.
 
 5. **Save the file** and restart Claude Desktop.
 
@@ -121,7 +121,7 @@ Follow these simple steps to connect this MCP server to Claude Desktop or Cursor
      "mcp.servers": {
        "wordpress-gutenberg": {
          "command": "node",
-         "args": ["/full/path/to/wordpress-gutenberg-mcp-server/dist/index.js"]
+         "args": ["/full/path/to/BOIM-WP-MCP/dist/index.js"]
        }
      }
    }
@@ -245,7 +245,7 @@ Follow these simple steps to connect this MCP server to Claude Desktop or Cursor
 ### Project Structure
 
 ```
-wordpress-gutenberg-mcp-server/
+BOIM-WP-MCP/
 ├── src/
 │   ├── index.ts              # Main MCP server
 │   ├── standards.ts           # Coding standards
