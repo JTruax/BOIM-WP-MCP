@@ -1,4 +1,4 @@
-# WordPress Gutenberg MCP Server
+# BOIM WordPress Stack MCP
 
 A Model Context Protocol (MCP) server that acts as a coding standards and framework guide for LLM connectors (like Claude Desktop or Cursor). It provides WordPress development knowledge, code generation tools, and best practices focused on Gutenberg blocks, GeneratePress theme, GenerateBlocks plugin, and WPCodebox code snippet formatting.
 
